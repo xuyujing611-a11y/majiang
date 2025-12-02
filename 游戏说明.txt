@@ -58,3 +58,5 @@ finished: 结算阶段。显示输赢分数，并在几秒后提供“再来一�
 想改图片: 把新图片丢进 public/assets/，保持文件名一致。
 
 想改登录/数据库: 去 src/firebase.js 和 src/App.jsx。
+
+20251202上传github！
