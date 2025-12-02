@@ -1,0 +1,137 @@
+/* src/index.css */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@700;900&display=swap');
+
+html, body {
+    margin: 0; padding: 0; width: 100%; height: 100%;
+    overflow: hidden; position: fixed; touch-action: none;
+    -ms-overflow-style: none; scrollbar-width: none;
+    background-color: #0f3d24; color: white;
+    font-family: 'Noto Serif SC', serif;
+}
+
+/* 关键：让 React 的挂载点撑满屏幕 */
+#root { 
+    width: 100%; 
+    height: 100%; 
+    overflow: hidden; 
+}
+
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* 桌面纹理 - 这就是你要的绿色背景 */
+.felt-bg {
+    background: radial-gradient(circle at center, #1a5c38 0%, #0f3d24 100%);
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.felt-bg::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg width='6' height='6' viewBox='0 0 6 6' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'%3E%3Cpath d='M5 0h1L0 6V5zM6 5v1H5z'/%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+}
+
+/* 麻将牌样式 */
+.mahjong-tile {
+    position: relative; width: 34px; height: 48px;
+    background: linear-gradient(to bottom, #fdfdfd, #e6e6e6);
+    border-radius: 4px; box-shadow: 1px 1px 0 #bbb, 2px 2px 0 #aaa, 2px 3px 4px rgba(0,0,0,0.4);
+    display: flex; justify-content: center; align-items: center;
+    cursor: pointer; transition: transform 0.1s; user-select: none; flex-shrink: 0;
+    margin: 1px;
+}
+.mahjong-tile-mini {
+    width: 24px; height: 32px; border-radius: 2px; margin: 1px;
+    box-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+    position: relative;
+    background: linear-gradient(to bottom, #fdfdfd, #e6e6e6); /* 补上背景色 */
+    display: flex; justify-content: center; align-items: center;
+}
+.mahjong-tile-mini svg text { font-size: 24px; }
+
+@media (min-width: 768px) { 
+    .mahjong-tile { width: 44px; height: 60px; margin: 2px; } 
+    .mahjong-tile-mini { width: 30px; height: 40px; }
+}
+
+.mahjong-tile:active { transform: translate(2px, 2px); box-shadow: 1px 1px 2px rgba(0,0,0,0.4); }
+.mahjong-tile.selected { transform: translateY(-15px); border: 2px solid #ffff00; z-index: 10; }
+.mahjong-tile.disabled { filter: brightness(0.6); cursor: not-allowed; }
+
+/* 牌背 */
+.mahjong-back-container {
+    width: 26px; height: 38px; border-radius: 3px;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.3); overflow: hidden;
+    background: #2563eb; 
+    border: 1px solid #60a5fa; 
+    flex-shrink: 0; margin: 1px;
+    display: flex; align-items: center; justify-content: center;
+}
+.mahjong-back-inner {
+    width: 70%; height: 80%;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 2px;
+}
+.mahjong-back-side {
+    width: 32px; height: 14px; border-radius: 2px;
+    background: #1e40af; border: 1px solid #93c5fd;
+    margin-bottom: -7px;
+    box-shadow: 0px 2px 2px rgba(0,0,0,0.4);
+}
+
+/* 桌面 Grid 布局 */
+.center-table {
+    background: #143826; border: 5px solid #4a2c0f; border-radius: 16px;
+    box-shadow: inset 0 0 40px rgba(0,0,0,0.7);
+    display: grid;
+    grid-template-columns: 28px 1fr 28px; 
+    grid-template-rows: 40px 1fr 30px;
+}
+
+/* 动画定义 */
+@keyframes pop { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.animate-pop { animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+
+@keyframes fly-in { 
+    0% { transform: translateY(-150px) scale(0.5); opacity: 0; } 
+    100% { transform: translateY(0) scale(1); opacity: 1; } 
+}
+.animate-fly-in { animation: fly-in 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+@keyframes deal-appear {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+.animate-deal { animation: deal-appear 0.2s ease-out forwards; }
+
+@keyframes flash-red { 0%, 100% { box-shadow: inset 0 0 0 0 transparent; } 50% { box-shadow: inset 0 0 50px 10px rgba(255, 0, 0, 0.5); } }
+.animate-flash-red { animation: flash-red 1s infinite; }
+
+@keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(250, 204, 21, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0); }
+}
+.active-player-glow {
+    animation: pulse-ring 2s infinite;
+    border-color: #facc15 !important;
+}
+
+@keyframes draw-pulse {
+    0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(255,255,255,0)); }
+    50% { transform: scale(1.05); filter: drop-shadow(0 0 8px rgba(255,255,0,0.8)); }
+    100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(255,255,255,0)); }
+}
+.draw-btn-active {
+    animation: draw-pulse 1.5s infinite;
+    cursor: pointer;
+}
+
+.title-gold {
+    background: linear-gradient(to bottom, #fff7cc 0%, #facc15 50%, #d4a00f 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    filter: drop-shadow(0 2px 0px rgba(0,0,0,0.3));
+}
